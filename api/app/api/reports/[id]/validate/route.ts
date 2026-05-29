@@ -10,22 +10,23 @@ const ValidateSchema = z.object({
 
 export async function POST(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   const body = await req.json()
   const result = ValidateSchema.safeParse(body)
   if (!result.success) return error(result.error.message, 400)
 
   const { userId, confirma } = result.data
+  const { id } = await params
 
   // Verificar que el reporte existe
-  const reportRef = db.collection('reports').doc(params.id)
+  const reportRef = db.collection('reports').doc(id)
   const reportDoc = await reportRef.get()
   if (!reportDoc.exists) return error('Reporte no encontrado', 404)
 
   // Evitar que el mismo usuario valide dos veces
   const existing = await db.collection('validations')
-    .where('reportId', '==', params.id)
+    .where('reportId', '==', id)
     .where('userId', '==', userId)
     .get()
 
@@ -33,7 +34,7 @@ export async function POST(
 
   // Guardar validación
   await db.collection('validations').add({
-    reportId: params.id,
+    reportId: id,
     userId,
     confirma,
     fecha: new Date().toISOString(),
