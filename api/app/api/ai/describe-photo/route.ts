@@ -14,8 +14,7 @@ export async function POST(req: NextRequest) {
   const bytes = await file.arrayBuffer()
   const base64 = Buffer.from(bytes).toString('base64')
 
-  const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' })
-
+  const model = genAI.getGenerativeModel({ model: 'gemini-2.5-flash' })
   const result = await model.generateContent([
     {
       inlineData: {
