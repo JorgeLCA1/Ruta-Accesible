@@ -1,6 +1,6 @@
 import { NextRequest } from 'next/server'
 import { GoogleGenerativeAI } from '@google/generative-ai'
-import { ok, err } from '@/lib/api'
+import { ok, error } from '@/lib/api'
 
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!)
 
@@ -9,7 +9,7 @@ export async function POST(req: NextRequest) {
   const audio = formData.get('audio') as File | null
   const text = formData.get('text') as string | null
 
-  if (!audio && !text) return err('Se requiere audio o texto', 400)
+  if (!audio && !text) return error('Se requiere audio o texto', 400)
 
   const model = genAI.getGenerativeModel({ model: 'gemini-2.5-flash' })
 
