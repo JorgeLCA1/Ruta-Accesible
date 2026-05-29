@@ -38,7 +38,7 @@ export async function GET(req: NextRequest) {
     const radius = parseFloat(searchParams.get("radius") ?? "5")
     const tipo = searchParams.get("tipo_barrera")
 
-    if (!lat || !lng) return error("Latitud y longitud son requeridas", 400)
+    if (isNaN(lat) || isNaN(lng)) return error('lat y lng son requeridos', 400)
 
     const snapshot = await db.collection('reports')
         .where('estado', '!=', 'resuelto')
