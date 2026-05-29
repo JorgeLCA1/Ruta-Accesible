@@ -1,6 +1,6 @@
 import { NextRequest } from 'next/server'
 import { GoogleGenerativeAI } from '@google/generative-ai'
-import { ok, err } from '@/lib/api'
+import { ok, error } from '@/lib/api'
 
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!)
 
@@ -8,7 +8,7 @@ export async function POST(req: NextRequest) {
   const formData = await req.formData()
   const file = formData.get('audio') as File
 
-  if (!file) return err('No se recibió ningún archivo de audio', 400)
+  if (!file) return error('No se recibió ningún archivo de audio', 400)
 
   const bytes = await file.arrayBuffer()
   const base64 = Buffer.from(bytes).toString('base64')
@@ -43,6 +43,6 @@ export async function POST(req: NextRequest) {
     const parsed = JSON.parse(clean)
     return ok(parsed)
   } catch {
-    return err('No se pudo procesar el audio', 500)
+    return error('No se pudo procesar el audio', 500)
   }
 }
